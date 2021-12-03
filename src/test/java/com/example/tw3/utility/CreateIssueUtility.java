@@ -88,6 +88,7 @@ public class CreateIssueUtility {
     }
 
     public void deleteIssue() {
+        wait.until(ExpectedConditions.visibilityOf(issuePage.getMoreBtn()));
         issuePage.getMoreBtn().click();
         MoreOptionsDropDown more = new MoreOptionsDropDown();
         while (!more.getDeleteOption().isDisplayed()) {

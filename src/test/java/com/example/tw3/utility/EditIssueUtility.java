@@ -8,6 +8,7 @@ import com.example.tw3.pages.screens.EditIssueScreen;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public class EditIssueUtility {
@@ -44,8 +45,6 @@ public class EditIssueUtility {
         createIssue(MTP,bug,summary);
         editIssue(editedSummary);
         WebDriverRunner.getWebDriver().get(WebDriverRunner.getWebDriver().getCurrentUrl()); // thanks @Bori! :)
-        System.out.println(issuePage.getIssueSummary().text());
-        System.out.println(editedSummary);
         return issuePage.getIssueSummary().text().equals(editedSummary);
     }
 
@@ -66,5 +65,41 @@ public class EditIssueUtility {
 
     public String actualUrl(){
         return WebDriverRunner.getWebDriver().getCurrentUrl();
+    }
+
+    public boolean validateMandatoryField() {
+        Project MTP = Project.MTP;
+        IssueType bug = IssueType.Bug;
+        id = UUID.randomUUID();
+        String summary = "issue summary "+id;
+        createIssue(MTP,bug,summary);
+        issuePage.getEditIssueBtn().click();
+        wait.until(ExpectedConditions.visibilityOf(editIssueScreen.getEditIssueDialog()));
+        editIssueScreen.getIssueSummaryField().clear();
+        editIssueScreen.getIssueUpdateBtn().click();
+        wait.until(ExpectedConditions.visibilityOf(editIssueScreen.getErrorMessage()));
+        boolean isErrorMsgPresent = editIssueScreen.getErrorMessage().isDisplayed();
+        editIssueScreen.getIssueSummaryField().sendKeys(summary);
+        editIssueScreen.getIssueUpdateBtn().click();
+        return isErrorMsgPresent;
+    }
+
+    public boolean validateCancelEdit() {
+        Project MTP = Project.MTP;
+        IssueType bug = IssueType.Bug;
+        id = UUID.randomUUID();
+        String summary = "issue summary "+id;
+        String editedSummary = "issue summary edited";
+        createIssue(MTP,bug,summary);
+        issuePage.getEditIssueBtn().click();
+        wait.until(ExpectedConditions.visibilityOf(editIssueScreen.getEditIssueDialog()));
+        editIssueScreen.getIssueSummaryField().clear();
+        editIssueScreen.getIssueSummaryField().sendKeys(editedSummary);
+        editIssueScreen.getCancelBtn().click();
+        wait.withTimeout(Duration.ofSeconds(2));
+        WebDriverRunner.getWebDriver().switchTo().alert().accept();
+        wait.until(ExpectedConditions.not(ExpectedConditions.alertIsPresent()));
+        return issuePage.getIssueSummary().text().equals(summary);
+
     }
 }

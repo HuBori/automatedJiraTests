@@ -8,6 +8,9 @@ public class EditIssueScreen {
     private final SelenideElement editIssueDialog = $x("//section[@id='edit-issue-dialog']");
     private final SelenideElement issueSummaryField = $x("//input[@id='summary']");
     private final SelenideElement issueUpdateBtn = $x("//input[@id='edit-issue-submit']");
+    private final SelenideElement cancelBtn = $x("//button[@class='aui-button aui-button-link cancel']");
+    private final SelenideElement errorMessage = $x("//div[contains(text(),'You must specify a summary of the issue.')]");
+
 
 
     public SelenideElement getEditIssueDialog() {
@@ -20,5 +23,13 @@ public class EditIssueScreen {
 
     public SelenideElement getIssueUpdateBtn() {
         return issueUpdateBtn;
+    }
+
+    public SelenideElement getErrorMessage() {
+        return errorMessage;
+    }
+
+    public SelenideElement getCancelBtn() {
+        return cancelBtn;
     }
 }
